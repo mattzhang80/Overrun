@@ -18,9 +18,9 @@ int main(void) {
    FILE *dataB;
    
    dataB = fopen("dataB", "w+");
-   fprintf(dataB, "Alex Delistathis & Matthew Zhang\0"
+   fprintf(dataB, "Alex Delistathis & Matthew Zhang"
       );
-   fprintf(dataB, "%!$#^@*&@^#&*&&4196500");
+   fprintf(dataB, "angangangangang4196500");
 
    return 0;
 }

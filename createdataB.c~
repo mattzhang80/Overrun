@@ -20,7 +20,7 @@ int main(void) {
    dataB = fopen("dataB", "w+");
    fprintf(dataB, "Alex Delistathis & Matthew Zhang\0"
       );
-   fprintf(dataB, "%!$#^@*&@^#&*&&4196496");
+   fprintf(dataB, "%!$#^@*&@^#&*&&4196500");
 
    return 0;
 }
