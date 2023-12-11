@@ -1,6 +1,7 @@
 /*--------------------------------------------------------------------*/
 /* miniassembler.c                                                    */
-/* Author: Bob Dondero, Donna Gabai                                   */
+/* Author: Bob Dondero, Donna Gabai,                                  */
+/* Editors: Matthew Zhang, Alex Delisthathis                          */
 /*--------------------------------------------------------------------*/
 
 #include "miniassembler.h"

