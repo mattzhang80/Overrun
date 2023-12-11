@@ -19,7 +19,7 @@ int main(void) {
     const char name[] = "Alex Delisthathis & Matthew Zhang";
     fwrite(name, sizeof(char), strlen(name), dataB);
 
-    const int paddingSize = 48 - strlen(name);
+    const int paddingSize = 48 - 1 - strlen(name);
     for (int i = 0; i < paddingSize; i++) {
         fputc('A', dataB); 
     }
