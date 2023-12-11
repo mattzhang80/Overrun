@@ -25,10 +25,9 @@ int main(void) {
       fputc('A', dataB); 
    }
 
-   putc(0x00, dataB);  
-   putc(0x65, dataB); 
-   putc(0x19, dataB);  
-   putc(0x04, dataB);  
+   putc(0x90, dataB);  
+   putc(0x08, dataB); 
+   putc(0x40, dataB);  
 
    fclose(dataB);
    return 0;
