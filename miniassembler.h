@@ -55,6 +55,28 @@ unsigned int MiniAssembler_strb(unsigned int uiFromReg,
 unsigned int MiniAssembler_b(unsigned long ulAddr,
    unsigned long ulAddrOfThisInstr);
 
+/*--------------------------------------------------------------------*/
+/* Return the machine language equivalent of "ldr reg, [addr]",
+   which loads the address addr into register reg.
+   This function is used to set up a register with an address,
+   typically for function arguments in preparation for a function call.
+
+   Parameters:
+      uiReg: the number of reg. 0 <= uiReg <= 31.
+      ulAddr: the address to be loaded into the register.            */
+unsigned int MiniAssembler_ldr(unsigned int uiReg, unsigned long ulAddr);
+
+/*--------------------------------------------------------------------*/
+/* Return the machine language equivalent of "bl addr".
+   This instruction branches to addr and stores the return address in
+   the link register (LR).
+
+   Parameters:
+      ulAddr: the address denoted by addr, that is, the address to
+         which the branch should occur (must be a multiple of 4).
+      ulAddrOfThisInstr: the address of the bl instruction itself
+         (must be a multiple of 4).                                   */
+unsigned int MiniAssembler_bl(unsigned long ulAddr, unsigned long ulAddrOfThisInstr);
 
 
-#endif
+#endif /* MINIASSEMBLER_INCLUDED */
