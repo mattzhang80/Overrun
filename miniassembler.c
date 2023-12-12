@@ -140,11 +140,12 @@ unsigned int MiniAssembler_b(unsigned long ulAddr, unsigned long ulAddrOfThisIns
 unsigned int MiniAssembler_ldr(unsigned int uiReg, unsigned long ulAddr) {
     unsigned long CURRENT_PC = 0x420078;
     unsigned int uiInstr = 0x58000000;
+    long offset;
     assert(uiReg <= 31);
 
     /* Compute the offset from PC (must be a multiple of 4) */
     /* Assuming ulAddr is the actual address of the data to load */
-    long offset = (ulAddr - CURRENT_PC) / 4; 
+    offset = (ulAddr - CURRENT_PC) / 4; 
 
     setField(uiReg, 0, &uiInstr, 0, 5);
     setField((unsigned int)offset, 0, &uiInstr, 5, 19);

