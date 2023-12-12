@@ -1,10 +1,10 @@
 ------------------------------------------------------------------------
-
+DATA
    Address (in hex)	Content (in hex)	Description
    0x420044    		0x44	    		grade
    0x420048          
 
-
+BSS
 Address (in hex)	Description
    0x420058    A
    0x420059		l

