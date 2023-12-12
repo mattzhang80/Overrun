@@ -11,6 +11,7 @@ int main(void) {
     FILE *dataAplus;
     unsigned int payloadAddress, printfAddress, returnAddress;
     unsigned int ldrInstr, blInstr;
+    int i = 0;
 
     dataAplus = fopen("dataAplus", "w+");
 
@@ -23,7 +24,6 @@ int main(void) {
     payloadAddress = 0x420100; /* Address where our payload will be located */
 
     /* Padding to fill buffer and reach return address */
-    int i = 0;
     while(i < 64) {
         putc('A', dataAplus);
         i++;
