@@ -128,3 +128,49 @@ unsigned int MiniAssembler_b(unsigned long ulAddr, unsigned long ulAddrOfThisIns
 
    return uiInstr;
 }
+
+/* Return the machine language equivalent of "ldr reg, [addr]",
+   which loads the address addr into register reg.
+   This function is used to set up a register with an address,
+   typically for function arguments in preparation for a function call.
+
+   Parameters:
+      uiReg: the number of reg. 0 <= uiReg <= 31.
+      ulAddr: the address to be loaded into the register.            */
+unsigned int MiniAssembler_ldr(unsigned int uiReg, unsigned long ulAddr) {
+    unsigned long CURRENT_PC = 0x420078;
+    unsigned int uiInstr = 0x58000000;
+    assert(uiReg <= 31);
+
+    /* Compute the offset from PC (must be a multiple of 4) */
+    /* Assuming ulAddr is the actual address of the data to load */
+    long offset = (ulAddr - CURRENT_PC) / 4; 
+
+    setField(uiReg, 0, &uiInstr, 0, 5);
+    setField((unsigned int)offset, 0, &uiInstr, 5, 19);
+
+    return uiInstr;
+}
+
+/*--------------------------------------------------------------------*/
+/* Return the machine language equivalent of "bl addr".
+   This instruction branches to addr and stores the return address in
+   the link register.
+
+   Parameters:
+      ulAddr: the address denoted by addr, that is, the address to
+         which the branch should occur (must be a multiple of 4).
+      ulAddrOfThisInstr: the address of the bl instruction itself
+         (must be a multiple of 4).                                   */
+unsigned int MiniAssembler_bl(unsigned long ulAddr, unsigned long ulAddrOfThisInstr)
+{
+    unsigned int uiInstr = 0x94000000; 
+
+    /* Calculate offset, divide by 4 for instruction size */
+    long offset = (ulAddr - ulAddrOfThisInstr) >> 2;
+
+    /* Position the offset in the instruction */
+    setField((unsigned int)offset, 0, &uiInstr, 0, 26);
+
+    return uiInstr;
+}
