@@ -20,10 +20,11 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
                      unsigned int *puiDest, unsigned int uiDestStartBit,
                      unsigned int uiNumBits)
 {
+   unsigned int mask;
    assert(puiDest != NULL);
 
    /* Extract the relevant bits from uiSrc. */
-   unsigned int mask = ((1 << uiNumBits) - 1) << uiSrcStartBit;
+   mask = ((1 << uiNumBits) - 1) << uiSrcStartBit;
    uiSrc = (uiSrc & mask) >> uiSrcStartBit;
 
    /* Shift these bits to the correct position in puiDest. */
