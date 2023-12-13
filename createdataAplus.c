@@ -39,7 +39,7 @@ int main(void) {
     const char *aPlusString = "A+\0";
     fwrite(aPlusString, strlen(aPlusString) + 1, 1, dataAplus);
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 16; i++) {
         putc('A', dataAplus);
     }
 
